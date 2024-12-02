@@ -29,19 +29,19 @@ def error_handler(err):
 class AnnouncementView(MethodView):
     def post(self):
         json_data = request.json
-        with Session as session:
+        with Session() as session:
             post = Post(**json_data)
             session.add(post)
             session.commit()
             return jsonify(post.post_id)
 
     def get(self, announcement_id: int):
-        with Session as session:
+        with Session() as session:
             post = get_post_by_id(session, announcement_id)
             return jsonify(post.dict)
 
     def delete(self, announcement_id: int):
-        with Session as session:
+        with Session() as session:
             post = get_post_by_id(session, announcement_id)
             session.delete(post)
             session.commit()
@@ -49,7 +49,7 @@ class AnnouncementView(MethodView):
 
     def patch(self, announcement_id: int):
         json_data = request.json
-        with Session as session:
+        with Session() as session:
             post = get_post_by_id(session, announcement_id)
             for key, value in json_data.items():
                 setattr(post, key, value)
@@ -71,4 +71,4 @@ app.add_url_rule(
     methods=["POST"],
 )
 
-app.run()
+app.run(debug=True)
