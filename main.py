@@ -27,7 +27,7 @@ def error_handler(err):
 
 
 class AnnouncementView(MethodView):
-    @app.route('/announcement', methods=['POST'])
+    # @app.route('/announcement', methods=['POST'])
     def post(self):
         json_data = request.json
         try:
@@ -39,13 +39,13 @@ class AnnouncementView(MethodView):
         except Exception as e:
             raise HttpError(400, str(e))
 
-    @app.route('/announcement/<int:announcement_id>', methods=['GET'])
+    # @app.route('/announcement/<int:announcement_id>', methods=['GET'])
     def get(self, announcement_id: int):
         with Session() as session:
             post = get_post_by_id(session, announcement_id)
             return jsonify(post.dict)
 
-    @app.route('/announcement/<int:announcement_id>', methods=['DELETE'])
+    # @app.route('/announcement/<int:announcement_id>', methods=['DELETE'])
     def delete(self, announcement_id: int):
         with Session() as session:
             post = get_post_by_id(session, announcement_id)
@@ -53,7 +53,7 @@ class AnnouncementView(MethodView):
             session.commit()
         return jsonify({'status': 'delete'})
 
-    @app.route('/announcement/<int:announcement_id>', methods=['PATCH'])
+    # @app.route('/announcement/<int:announcement_id>', methods=['PATCH'])
     def patch(self, announcement_id: int):
         json_data = request.json
         with Session() as session:
@@ -65,17 +65,17 @@ class AnnouncementView(MethodView):
             return jsonify(post.post_id)
 
 
-# announcement_view = AnnouncementView.as_view('announcement')
-#
-# app.add_url_rule(
-#     '/announcement/<int:announcement_id>',
-#     view_func=announcement_view,
-#     methods=["GET", "PATCH", "DELETE"],
-# )
-# app.add_url_rule(
-#     '/announcement',
-#     view_func=announcement_view,
-#     methods=["POST"],
-# )
+announcement_view = AnnouncementView.as_view('announcement')
+
+app.add_url_rule(
+    '/announcement/<int:announcement_id>',
+    view_func=announcement_view,
+    methods=["GET", "PATCH", "DELETE"],
+)
+app.add_url_rule(
+    '/announcement',
+    view_func=announcement_view,
+    methods=["POST"],
+)
 
 app.run(debug=True)

@@ -33,16 +33,17 @@ class Post(Base):
     post_id: Mapped[int] = mapped_column(Integer, primary_key=True)
     title: Mapped[str] = mapped_column(String, nullable=False, unique=True)
     description: Mapped[str] = mapped_column(String, nullable=False)
-    created_at: Mapped[datetime.datetime] = mapped_column(DateTime, server_default=func.now())
     author: Mapped[str] = mapped_column(String, nullable=False, unique=True)
+    created_at: Mapped[datetime.datetime] = mapped_column(DateTime, server_default=func.now(), nullable=False)
 
     def dict(self):
         return {
             "id": self.post_id,
             "title": self.title,
             "description": self.description,
-            'created_at': self.created_at.isoformat()
+            'created_at': self.created_at.isoformat() if isinstance(self.created_at, datetime.datetime) else None
         }
 
 
+Base.metadata.drop_all(engine)
 Base.metadata.create_all(engine)
